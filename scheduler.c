@@ -7,7 +7,7 @@
 #include "bs_types.h"
 #include "globals.h"
 #include "scheduler.h"
-#include "processcontrol.h"
+//#include "processcontrol.h"
 
 
 /* ----------------------------------------------------------------- */
@@ -31,7 +31,7 @@ pid_t schedule(readyList_t readyListParam)
 	// 
 	// 
 	// remove selected process from ready list
-	removeReady(nextToRun);//hier die funktion aus processcontrol benutzen,
+	//removeReady(nextToRun);//hier die funktion aus processcontrol benutzen,
 	//um einen  prozess aus der readyliste zu nehmen
 	
 	//readyList=NULL;			// for batch only one process can be in readylist 
