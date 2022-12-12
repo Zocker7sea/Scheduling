@@ -117,7 +117,7 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 {
 	processTable[pid].status = blocked;			// change process state to "blocked"
 	helperBlockedList = blockedList;
-	while (readyList->next != NULL) {
+	while (helperBlockedList->next != NULL) {
 		helperBlockedList = helperBlockedList->next;
 		//an das ende der liste gehen
 	}
@@ -211,11 +211,13 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 {
 	processTable[pid].status = ready;// change process state to "ready"
 	//Ein Element an das Ende der Liste hinzufügen
-	helperReadyList = readyList;
-	while (readyList->next != NULL) {
+	helperReadyList = &readyList;
+	while (helperReadyList->next != NULL) {
 		helperReadyList = helperReadyList->next;
 		//an das ende der liste gehen
 	}
+	
+	printf("\ntest ------------------------------------------------------\n ");
 	//wenn ende erreicht, einen neuen eintrag machen
 	helperReadyList->next = malloc(sizeof(readyListElement_t));
 	helperReadyList->next->pid = pid;
