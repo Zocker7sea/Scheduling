@@ -18,12 +18,12 @@ readyList_t readyList;	// list of runnable processes ---> rL
 readyList_t helperReadyList;
 blockedList_t blockedList;	// pointer to blocked process ---> bL
 blockedList_t helperBlockedList;
+blockedList_t blockedNew;
 
 /* ----------------------------------------------------------------	*/
 /* Declarations of global variables visible only in this file 		*/
 blockedListElement_t blockedOne; // the only process that can be blocked 
 /*this must be extended to a suitable data structure for multiprogramming */
-
 readyListElement_t readyOne;	// the only process ready in the batch system 
 /*this must be extended to a suitable data structure for multiprogramming */
 
@@ -98,6 +98,7 @@ Boolean initBlockedList(void)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
 	helperBlockedList = NULL;
+	blockedNew = NULL;
 	blockedList = NULL;
 	return TRUE;
 }
@@ -116,27 +117,47 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 /* retuns FALSE on error and TRUE on success								*/
 {
-	helperBlockedList = blockedList;
-
 	processTable[pid].status = blocked;	// change process state to "blocked"
-	if (helperBlockedList == NULL) {
-		//wenn die bL leer ist, erten eintrag erstellen
-		helperBlockedList = malloc(sizeof(readyList_t));
-		helperBlockedList->pid = pid;
-		helperBlockedList->IOready = systemTime + blockDuration;;
-		helperBlockedList->next = NULL;
+
+	//blockedList_t blockedNew;
+	//helperBlockedList = NULL;//blockedList;
+	blockedNew->pid = pid;
+	blockedNew->next = NULL;
+	blockedNew->IOready = systemTime + blockDuration;
+
+	if (blockedList == NULL
+		|| blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid) {
+		//guckt nach ob die liste leer ist oder ob die IOR 
+		//vom listen element > als die neue IOR ist
+		blockedNew->next = blockedList;
+		//blockedNew next auf die bL setzten
+		blockedList = blockedNew;
+		//der kopf von bL ist dann blockedNew
+			//blockedList = malloc(sizeof(blockedList_t));
+			//blockedList->pid = pid;
+			//blockedList->IOready = systemTime + blockDuration;
+			//blockedList->next = NULL;
 	}
 	else {
+
+		helperBlockedList = blockedList;
+
 		//wenn die bL schon n viele einträge hat, zum ende der liste gehen und einen neuen eintrag erstellen
-		while (helperBlockedList->next != NULL) {
+		while (helperBlockedList->next != NULL 
+			&& helperBlockedList->next->IOready
+			< blockedNew->IOready) {
+			//gucken ob die hBL noch next einträge hat &&
+			// ob dann die IOR < als die blockedNew->IOR ist 
 			helperBlockedList = helperBlockedList->next;
 			//an das ende der liste gehen
 		}
-		//wenn ende erreicht, einen neuen eintrag machen
-		helperBlockedList->next = malloc(sizeof(blockedList_t));
-		helperBlockedList->next->pid = pid;//neunen eintrag mit pid 
-		helperBlockedList->next->IOready = systemTime + blockDuration;//dem listen element  einen IOready wert zuweisen
-		helperBlockedList->next->next = NULL;//neuen eintrag mit einen NULL verweis, da es noch kein nächsten eintrag gibt
+		blockedNew->next = helperBlockedList->next;
+		helperBlockedList->next = blockedNew;
+			//wenn ende erreicht, einen neuen eintrag machen
+			//helperBlockedList->next = malloc(sizeof(blockedList_t));
+			//helperBlockedList->next->pid = pid;//neunen eintrag mit pid 
+			//helperBlockedList->next->IOready = systemTime + blockDuration;//dem listen element  einen IOready wert zuweisen
+			//helperBlockedList->next->next = NULL;//neuen eintrag mit einen NULL verweis, da es noch kein nächsten eintrag gibt
 		
 		//old
 			//blockedOne.IOready = systemTime + blockDuration;
@@ -158,8 +179,8 @@ Boolean removeBlocked(pid_t pid)
 {
 	//bisher gedacht, das er anfang der liste der erste eintrag ist, der verschwindet
 
-	blockedList->pid = NO_PROCESS;// forget the blocked process hier den head der liste nehmen
-	blockedList->IOready = 0;
+	blockedList->pid = NO_PROCESS;//forget the blocked process hier den head der liste nehmen
+	blockedList->IOready = 0; //da prozess dann ready wird ioR = 0
 	blockedList = blockedList->next;//die blockedList auf den nächsten eintrag setzten
 	//old
 		//blockedOne.IOready = 0;

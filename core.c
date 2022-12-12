@@ -66,7 +66,6 @@ void coreLoop(void)
 				/* Add Code for handling of started or unblocked processes here. 
 				/* For RR it is simply enqueing to the readylist, other schedulers may require more actions */
 				addReady(readyProcess);		// add this process to the ready list
-				
 				/* Last command in the while loop is the following (must alway remain the last command in the loop) */
 				releaseEvent = sim_check4UnblockedOrNew(&readyProcess);	// check for further events, must stay in!
 			}
