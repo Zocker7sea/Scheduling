@@ -16,6 +16,7 @@
 PCB_t processTable[NUM_PROCESSES+1]; 	// the process table
 readyList_t readyList;	// list of runnable processes ---> rL
 readyList_t helperReadyList;
+readyList_t readyNew;
 blockedList_t blockedList;	// pointer to blocked process ---> bL
 blockedList_t helperBlockedList;
 blockedList_t blockedNew;
@@ -100,6 +101,7 @@ Boolean initBlockedList(void)
 	helperBlockedList = NULL;
 	blockedNew = NULL;
 	blockedList = NULL;
+	blockedOne;
 	return TRUE;
 }
 
@@ -121,9 +123,11 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 
 	//blockedList_t blockedNew;
 	//helperBlockedList = NULL;//blockedList;
+	blockedNew = malloc(sizeof(blockedList_t));
 	blockedNew->pid = pid;
-	blockedNew->next = NULL;
 	blockedNew->IOready = systemTime + blockDuration;
+	blockedNew->next = NULL;
+	
 
 	if (blockedList == NULL
 		|| blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid) {
@@ -202,6 +206,7 @@ blockedListElement_t *headOfBlockedList()
 {
 	//bisher, der erste eintrag ist, der erste welcher verschindet/ kürzeste IOtime
 	if (!isBlockedListEmpty()) {
+		
 		blockedOne.pid = blockedList->pid;//weise rO pid die pid von rL zu 
 		blockedOne.IOready = blockedList->IOready;//vom ersten eintrag, die IO zeit
 		blockedOne.next = NULL;//null oder verweis auf next von bL
@@ -230,7 +235,9 @@ Boolean initReadyList(void)
 /* xxxx batch processing. A ready list needs to be implemented 		   xxxx */
 {
 	helperReadyList = NULL;
+	readyNew = NULL;
 	readyList = NULL;
+	readyOne;
 	return TRUE;
 }
 
@@ -245,23 +252,23 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 /* xxxx batch processing. A blocked list needs to be implemented 	   xxxx */
 {
 	processTable[pid].status = ready;// change process state to "ready"
-	helperReadyList = readyList;
-	if (helperReadyList == NULL) {
-		helperReadyList = malloc(sizeof(readyList_t));
-		helperReadyList->pid = pid;
-		helperReadyList->next = NULL;
+	readyNew = malloc(sizeof(readyList_t));
+	readyNew->pid = pid;
+	readyNew->next = NULL;
+	if (readyList == NULL) {
+		readyNew->next = readyList;
+		readyList = readyNew;
 	}
 	else {
+		helperReadyList = readyList;
 		//Ein Element an das Ende der Liste hinzufügen
 		while (helperReadyList->next != NULL) {
 			helperReadyList = helperReadyList->next;
 			//an das ende der liste gehen
 		}
 		//wenn ende erreicht, einen neuen eintrag machen
-		helperReadyList->next = malloc(sizeof(readyList_t));
-
-		helperReadyList->next->pid = pid;
-		helperReadyList->next->next = NULL;
+		readyNew->next = helperReadyList->next;
+		helperReadyList->next = readyNew;
 
 		//old
 			//readyOne.pid = pid; // speichter pid in readyOne.pid
