@@ -121,8 +121,6 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 {
 	processTable[pid].status = blocked;	// change process state to "blocked"
 
-	//blockedList_t blockedNew;
-	//helperBlockedList = NULL;//blockedList;
 	blockedNew = malloc(sizeof(blockedList_t));
 	blockedNew->pid = pid;
 	blockedNew->IOready = systemTime + blockDuration;
@@ -130,22 +128,16 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 	
 
 	if (blockedList == NULL
-		|| blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid) {
+		|| blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid)
+		//  50 + 10 >= 50 + 5
 		//guckt nach ob die liste leer ist oder ob die IOR 
 		//vom listen element > als die neue IOR ist
 		blockedNew->next = blockedList;
 		//blockedNew next auf die bL setzten
 		blockedList = blockedNew;
-		//der kopf von bL ist dann blockedNew
-			//blockedList = malloc(sizeof(blockedList_t));
-			//blockedList->pid = pid;
-			//blockedList->IOready = systemTime + blockDuration;
-			//blockedList->next = NULL;
 	}
 	else {
-
 		helperBlockedList = blockedList;
-
 		//wenn die bL schon n viele einträge hat, zum ende der liste gehen und einen neuen eintrag erstellen
 		while (helperBlockedList->next != NULL 
 			&& helperBlockedList->next->IOready
@@ -157,12 +149,6 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 		}
 		blockedNew->next = helperBlockedList->next;
 		helperBlockedList->next = blockedNew;
-			//wenn ende erreicht, einen neuen eintrag machen
-			//helperBlockedList->next = malloc(sizeof(blockedList_t));
-			//helperBlockedList->next->pid = pid;//neunen eintrag mit pid 
-			//helperBlockedList->next->IOready = systemTime + blockDuration;//dem listen element  einen IOready wert zuweisen
-			//helperBlockedList->next->next = NULL;//neuen eintrag mit einen NULL verweis, da es noch kein nächsten eintrag gibt
-		
 		//old
 			//blockedOne.IOready = systemTime + blockDuration;
 			//  // this must be supported by an extended implementation!
@@ -252,9 +238,11 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 /* xxxx batch processing. A blocked list needs to be implemented 	   xxxx */
 {
 	processTable[pid].status = ready;// change process state to "ready"
+
 	readyNew = malloc(sizeof(readyList_t));
 	readyNew->pid = pid;
 	readyNew->next = NULL;
+
 	if (readyList == NULL) {
 		readyNew->next = readyList;
 		readyList = readyNew;

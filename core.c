@@ -87,7 +87,7 @@ void coreLoop(void)
 						processTable[currentProcess].status = ready;	// update status
 					// add this process to the ready list
 					addReady(currentProcess); 
-					break; 
+					break;
 				default: 
 					break; 
 			}

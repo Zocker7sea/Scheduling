@@ -14,16 +14,16 @@ void removeBlockedTest() {
 	addBlocked(1, 20);		// 70       3
 	addBlocked(2, 30);		//80        4
 	addBlocked(3, 0);		//50        1
-	printf("\n\nReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);// pid 3
+	printf("\n\n  ReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);// pid 3
 
 	removeBlocked(headOfBlockedList);
-	printf("first unlock pid is %d\n", blockedList->pid);
-	printf("first unlock io is %d\n", blockedList->IOready);
-	printf("second unlock pid is %d\n", blockedList->next->pid);
-	printf("second unlock io is %d\n", blockedList->next->IOready);
-	printf("thrid unlock pid is %d\n", blockedList->next->next->pid);
-	printf("thrid unlock io is %d\n", blockedList->next->next->IOready);
-	printf("\n\nReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);// pid 3
+	printf("  first unlock pid is %d\n", blockedList->pid);
+	printf("  first unlock io is %d\n", blockedList->IOready);
+	printf("  second unlock pid is %d\n", blockedList->next->pid);
+	printf("  second unlock io is %d\n", blockedList->next->IOready);
+	printf("  thrid unlock pid is %d\n", blockedList->next->next->pid);
+	printf("  thrid unlock io is %d\n", blockedList->next->next->IOready);
+	printf("\n\n  ReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);// pid 3
 
 }
 void blockedTest() {
@@ -33,10 +33,10 @@ void blockedTest() {
 	else {
 		printf("not empty\n\n\n");
 	}
-	addBlocked(0, 5);		// 55       2
-	addBlocked(1, 20);		// 70      3
-	addBlocked(2, 30);		//80       4
-	addBlocked(3, 0);		//50        1
+	addBlocked(0, 5);		// 5        2
+	addBlocked(1, 20);		// 20       3
+	addBlocked(2, 30);		// 30       4
+	addBlocked(3, 0);		// 00       1
 	printf("after addBlocked\n");
 	if (isBlockedListEmpty()) {
 	printf("empty\n\n\n");
@@ -46,6 +46,7 @@ void blockedTest() {
 	}
 	printf("first unlock pid is %d\n", blockedList->pid);
 	printf("first unlock io is %d\n", blockedList->IOready);
+	
 	printf("second unlock pid is %d\n", blockedList->next->pid);
 	printf("second unlock io is %d\n", blockedList->next->IOready);
 	printf("thrid unlock pid is %d\n", blockedList->next->next->pid);
@@ -92,10 +93,6 @@ void removeReadyTest() {
 }
 
 int main(int argc, char* argv[])
-	
-
-
-
 {	// starting point, all processing is done in called functions
 	sim_initSim();		// initialise simulation run-time environment
 	initOS();		// initialise operating system
@@ -104,7 +101,7 @@ int main(int argc, char* argv[])
 	logGeneric("Simulation complete, shutting down");
 	sim_closeSim();		// shut down simulation envoronment
 	fflush(stdout);			// make sure the output on the console is complete 
-	//-------------TestARE ---------------------------
+	//-------------TestAREA ---------------------------
 		//blockedTest();
 		//removeBlockedTest();
 		//readyTest();
