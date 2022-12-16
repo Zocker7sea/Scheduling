@@ -122,9 +122,12 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 	processTable[pid].status = blocked;	// change process state to "blocked"
 
 	blockedNew = malloc(sizeof(blockedList_t));
-	blockedNew->pid = pid;
-	blockedNew->IOready = systemTime + blockDuration;
-	blockedNew->next = NULL;
+	if (blockedNew != NULL) {
+		blockedNew->pid = pid;
+		blockedNew->IOready = systemTime + blockDuration;
+		blockedNew->next = NULL;
+	}
+	
 	
 
 	if (blockedList == NULL
@@ -223,7 +226,7 @@ Boolean initReadyList(void)
 	helperReadyList = NULL;
 	readyNew = NULL;
 	readyList = NULL;
-	readyOne;
+	//readyOne;
 	return TRUE;
 }
 
