@@ -23,14 +23,16 @@ pid_t schedule(readyList_t readyListParam)
 {
 	pid_t nextToRun;
 	if (readyListParam == NULL) return NO_PROCESS;
-
 	// get process from readylist
 	nextToRun = headOfReadyList(readyListParam)->pid;
+
+
 	// remove selected process from ready list
 	//oder löst man dies, in dem man nur die rL auf rL.next setzt?
 	removeReady(nextToRun);//hier die funktion aus processcontrol benutzen,
-	//um einen  prozess aus der readyliste zu löschen,da dieser dann ausgeführt wird und nicht mehr ready ist
-	
+	printf("\n delete %d from readyList \n", nextToRun);
+	//printf("delete %d from readyList \n", nextToRun);
+	//printf("delete %d from readyList \n", nextToRun);
 	return nextToRun;
 	//old
 		//pid_t nextToRun;

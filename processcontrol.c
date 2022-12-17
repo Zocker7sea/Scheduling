@@ -171,7 +171,6 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
 	//bisher gedacht, das er anfang der liste der erste eintrag ist, der verschwindet
-
 	blockedList->pid = NO_PROCESS;//forget the blocked process hier den head der liste nehmen
 	blockedList->IOready = 0; //da prozess dann ready wird ioR = 0
 	blockedList = blockedList->next;//die blockedList auf den nächsten eintrag setzten

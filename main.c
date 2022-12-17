@@ -78,6 +78,8 @@ void readyTest() {
 	printf("thrid ready pid is %d\n", readyList->next->next->pid);
 	printf("fourth ready pid is %d\n", readyList->next->next->next->pid);
 	printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);// pid 0
+	printf("\SHedule pid is % d\n", schedule(readyList));
+	printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);
 }
 void removeReadyTest() {
 	addReady(0);		// 1      
@@ -94,17 +96,17 @@ void removeReadyTest() {
 
 int main(int argc, char* argv[])
 {	// starting point, all processing is done in called functions
-	sim_initSim();		// initialise simulation run-time environment
+	//sim_initSim();		// initialise simulation run-time environment
 	initOS();		// initialise operating system
-	logGeneric("Starting stimulus-based simulation");
-	coreLoop();		// start scheduling loop
-	logGeneric("Simulation complete, shutting down");
-	sim_closeSim();		// shut down simulation envoronment
-	fflush(stdout);			// make sure the output on the console is complete 
+	//logGeneric("Starting stimulus-based simulation");
+	//coreLoop();		// start scheduling loop
+	//logGeneric("Simulation complete, shutting down");
+	//sim_closeSim();		// shut down simulation envoronment
+	//fflush(stdout);			// make sure the output on the console is complete 
 	//-------------TestAREA ---------------------------
 		//blockedTest();
 		//removeBlockedTest();
-		//readyTest();
+		readyTest();
 		//removeReadyTest();
 	return 1; 
 }
