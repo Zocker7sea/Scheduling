@@ -94,18 +94,9 @@ Boolean initBlockedList(void)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	//helperBlockedList = malloc(sizeof(blockedList_t));
-	//if (helperBlockedList != NULL) {
-		helperBlockedList = NULL;
-	//}
-	//blockedNew = malloc(sizeof(blockedList_t));
-	//if (blockedNew != NULL) {
-		blockedNew = NULL;
-	//}
-	//blockedList = malloc(sizeof(blockedList_t));
-	//if (blockedList != NULL) {
-		blockedList = NULL;
-	//}
+	helperBlockedList = NULL;
+	blockedNew = NULL;
+	blockedList = NULL;
 	return TRUE;
 }
 
@@ -123,7 +114,7 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 /* retuns FALSE on error and TRUE on success								*/
 {
-	//printf("\naddBlocked %d\n", pid);
+	logPidAddBlocked(pid);
 	processTable[pid].status = blocked;	// change process state to "blocked"
 	blockedNew =  malloc(sizeof(blockedList_t));
 	if (blockedNew != NULL) {
@@ -152,7 +143,7 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	//printf("\n\nremoveBlocked %d\n\n", pid);
+	logPidRemovelocked(pid);
 	helperBlockedList = blockedList;
 	blockedList_t preve = NULL;
 	if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
@@ -223,6 +214,7 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 /* xxxx A global variable is used to store the only ready process in   xxxx */
 /* xxxx batch processing. A blocked list needs to be implemented 	   xxxx */
 {
+	logPidAddReady(pid);
 	processTable[pid].status = ready;// change process state to "ready"
 	//speicher für neues element allokieren
 	readyNew = malloc(sizeof(readyList_t));
@@ -254,7 +246,7 @@ Boolean removeReady(pid_t pid)
 /* xxxx A global variable is used to store ready process in batch    xxxx */
 /* xxxx processing. A ready list needs to be implemented 		       xxxx */
 {
-	//printf("\n\nremoveReady %d\n\n",pid);
+	logPidRemoveReady(pid);
 	helperReadyList = readyList;
 	readyList_t prev = NULL;
 	if (helperReadyList != NULL && helperReadyList->pid == pid) {
