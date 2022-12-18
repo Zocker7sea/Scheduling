@@ -19,13 +19,13 @@
 #define NO_RANDOM_SEED
 
 // Number of possible concurrent processes 
-#define NUM_PROCESSES 20
+#define NUM_PROCESSES 4
 
 // PID of zero is used to indicate that no matching process exists
 #define NO_PROCESS 0
 
 // Maximum duration one process gets the CPU, zero indicates no preemption
-#define QUANTUM 20
+#define QUANTUM 50
 
 // name of the file with process definitions
 #define PROCESS_FILENAME "processes.txt"

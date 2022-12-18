@@ -1,6 +1,8 @@
  # <OwnerID> <start> <duration> <type>  , where <type> stands for <os | interactive | batch | background | foreground>
- 00 00 10 os
- 01 15 20 interactive
+ 01 00 10 os
+ 02 10 50 batch
+ 03 60 80 batch
+ 04 150 30 batch
  
  
  

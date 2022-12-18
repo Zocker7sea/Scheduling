@@ -15,18 +15,15 @@
 /* Declare global variables according to definition in globals.h	*/
 PCB_t processTable[NUM_PROCESSES+1]; 	// the process table
 readyList_t readyList;	// list of runnable processes ---> rL
-readyList_t helperReadyList;
-readyList_t readyNew;
+readyList_t helperReadyList; // helper list for iteration
+readyList_t readyNew; // to save new added
 blockedList_t blockedList;	// pointer to blocked process ---> bL
-blockedList_t helperBlockedList;
-blockedList_t blockedNew;
+blockedList_t helperBlockedList; // helper list for iteration
+blockedList_t blockedNew; // to save new added
 
 /* ----------------------------------------------------------------	*/
 /* Declarations of global variables visible only in this file 		*/
-blockedListElement_t blockedOne; // the only process that can be blocked 
-/*this must be extended to a suitable data structure for multiprogramming */
-readyListElement_t readyOne;	// the only process ready in the batch system 
-/*this must be extended to a suitable data structure for multiprogramming */
+
 
 
 
@@ -41,7 +38,6 @@ pid_t getNextPid()
 /* entries in the process table. 											*/
 /* If no new PID can be returned (i.e. the process table is full, zero is 	*/
 /* returned, which is not a valid PID. 										*/
-
 {
 	static unsigned pidCounter = 0;
 	// determine next available pid. 
@@ -98,10 +94,18 @@ Boolean initBlockedList(void)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	helperBlockedList = NULL;
-	blockedNew = NULL;
-	blockedList = NULL;
-	blockedOne;
+	//helperBlockedList = malloc(sizeof(blockedList_t));
+	//if (helperBlockedList != NULL) {
+		helperBlockedList = NULL;
+	//}
+	//blockedNew = malloc(sizeof(blockedList_t));
+	//if (blockedNew != NULL) {
+		blockedNew = NULL;
+	//}
+	//blockedList = malloc(sizeof(blockedList_t));
+	//if (blockedList != NULL) {
+		blockedList = NULL;
+	//}
 	return TRUE;
 }
 
@@ -119,45 +123,23 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 /* retuns FALSE on error and TRUE on success								*/
 {
+	//printf("\naddBlocked %d\n", pid);
 	processTable[pid].status = blocked;	// change process state to "blocked"
-
-	blockedNew = malloc(sizeof(blockedList_t));
+	blockedNew =  malloc(sizeof(blockedList_t));
 	if (blockedNew != NULL) {
 		blockedNew->pid = pid;
 		blockedNew->IOready = systemTime + blockDuration;
 		blockedNew->next = NULL;
 	}
-	
-	
-
-	if (blockedList == NULL
-		|| blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid)
-		//  50 + 10 >= 50 + 5
-		//guckt nach ob die liste leer ist oder ob die IOR 
-		//vom listen element > als die neue IOR ist
+	if (blockedList == NULL || blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid)	
 		blockedNew->next = blockedList;
-		//blockedNew next auf die bL setzten
 		blockedList = blockedNew;
-	}
-	else {
+	}else {
 		helperBlockedList = blockedList;
-		//wenn die bL schon n viele einträge hat, zum ende der liste gehen und einen neuen eintrag erstellen
-		while (helperBlockedList->next != NULL 
-			&& helperBlockedList->next->IOready
-			< blockedNew->IOready) {
-			//gucken ob die hBL noch next einträge hat &&
-			// ob dann die IOR < als die blockedNew->IOR ist 
+		while (helperBlockedList->next != NULL && helperBlockedList->next->IOready < blockedNew->IOready) {
 			helperBlockedList = helperBlockedList->next;
-			//an das ende der liste gehen
 		}
-		blockedNew->next = helperBlockedList->next;
 		helperBlockedList->next = blockedNew;
-		//old
-			//blockedOne.IOready = systemTime + blockDuration;
-			//  // this must be supported by an extended implementation!
-			//blockedOne.pid = pid;
-			//blockedOne.next = blockedList;
-			//blockedList = &blockedOne;// remember the blocked process
 	}
 	return TRUE;
 }
@@ -170,14 +152,22 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	//bisher gedacht, das er anfang der liste der erste eintrag ist, der verschwindet
-	blockedList->pid = NO_PROCESS;//forget the blocked process hier den head der liste nehmen
-	blockedList->IOready = 0; //da prozess dann ready wird ioR = 0
-	blockedList = blockedList->next;//die blockedList auf den nächsten eintrag setzten
-	//old
-		//blockedOne.IOready = 0;
-		//blockedOne.pid = NO_PROCESS;	// forget the blocked process
-		//blockedList = NULL;				// now there is no blocked process
+	//printf("\n\nremoveBlocked %d\n\n", pid);
+	helperBlockedList = blockedList;
+	blockedList_t preve = NULL;
+	if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
+		blockedList = helperBlockedList->next;
+		//free(helperReadyList);
+		return TRUE;
+	}
+	while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
+		preve = helperBlockedList;
+		helperBlockedList = helperBlockedList->next;
+	}
+	if (helperBlockedList == NULL) {
+		return FALSE;
+	}
+	preve->next = helperBlockedList->next;
 	return TRUE;
 }
 
@@ -192,13 +182,8 @@ blockedListElement_t *headOfBlockedList()
 /* returns a pointer to the first element of the blocked list				*/
 /* MUST be implemented for simulation purposes								*/			
 {
-	//bisher, der erste eintrag ist, der erste welcher verschindet/ kürzeste IOtime
 	if (!isBlockedListEmpty()) {
-		
-		blockedOne.pid = blockedList->pid;//weise rO pid die pid von rL zu 
-		blockedOne.IOready = blockedList->IOready;//vom ersten eintrag, die IO zeit
-		blockedOne.next = NULL;//null oder verweis auf next von bL
-		return &blockedOne;	// return pointer to the only blocked element remembered
+		return blockedList;	// return pointer to the only blocked element remembered
 	} 
 	else return NULL;		// empty blocked list has no first element
 }
@@ -222,10 +207,9 @@ Boolean initReadyList(void)
 /* xxxx A global variable is used to store the ready process in        xxxx */
 /* xxxx batch processing. A ready list needs to be implemented 		   xxxx */
 {
-	helperReadyList = NULL;
+	helperReadyList= NULL;
 	readyNew = NULL;
 	readyList = NULL;
-	//readyOne;
 	return TRUE;
 }
 
@@ -240,32 +224,23 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 /* xxxx batch processing. A blocked list needs to be implemented 	   xxxx */
 {
 	processTable[pid].status = ready;// change process state to "ready"
-
+	//speicher für neues element allokieren
 	readyNew = malloc(sizeof(readyList_t));
-	readyNew->pid = pid;
-	readyNew->next = NULL;
-
-	if (readyList == NULL) {
-		readyNew->next = readyList;
-		readyList = readyNew;
+	if (readyNew != NULL) {
+		// werte  zuweisen
+		readyNew->pid = pid;
+		readyNew->next = NULL;
 	}
-	else {
+	if (readyList == NULL) {
+		//wenn die liste leer ist, dann wird die liste zu readynew
+		readyList = readyNew;
+	}else {
 		helperReadyList = readyList;
-		//Ein Element an das Ende der Liste hinzufügen
 		while (helperReadyList->next != NULL) {
 			helperReadyList = helperReadyList->next;
-			//an das ende der liste gehen
 		}
-		//wenn ende erreicht, einen neuen eintrag machen
-		readyNew->next = helperReadyList->next;
 		helperReadyList->next = readyNew;
-
-		//old
-			//readyOne.pid = pid; // speichter pid in readyOne.pid
-			//readyOne.next = readyList;//hier next auf die liste setzen
-			//readyList = &readyOne;?? muss man das dann auch verändern?
-			
-	}
+	}		
 		return TRUE;
 }
 
@@ -279,16 +254,43 @@ Boolean removeReady(pid_t pid)
 /* xxxx A global variable is used to store ready process in batch    xxxx */
 /* xxxx processing. A ready list needs to be implemented 		       xxxx */
 {
-	//löscht den ersten eintrag, aus der ready list, welcher dann bearbeitet wird oder?
-	readyList->pid = NO_PROCESS;// forget the ready process hier den head der liste nehmen
-	//oder mit head of lösen?
-	//headOfReadyList()->pid = NO_PROCESS;
-	//readyList = headOfReadyList()->next;
-	readyList = readyList->next;//die readyliste auf den nächsten eintrag setzten
-	//old
-		//readyOne.pid = NO_PROCESS;// forget the ready process
-		//readyList = readyOne.next; //hier die readyliste auf das next element setzen				
-		// ----------now there is no ready process
+	//printf("\n\nremoveReady %d\n\n",pid);
+	helperReadyList = readyList;
+	readyList_t prev = NULL;
+	if (helperReadyList != NULL && helperReadyList->pid == pid) {
+		readyList = helperReadyList->next;
+		//free(helperReadyList);
+		return TRUE;
+	}
+	while (helperReadyList != NULL && helperReadyList->pid != pid) {
+		prev = helperReadyList;
+		helperReadyList = helperReadyList->next;
+	}
+	if (helperReadyList == NULL) {
+		return FALSE;
+	}
+	prev->next = helperReadyList->next;
+	//free(helperReadyList);
+	//previous attempt
+	//helperReadyList = readyList;
+	//readyList_t temp = readyList->next;
+	//if (helperReadyList->pid == pid) {
+	//	printf("\nfirst\n");
+	//	helperReadyList = helperReadyList->next;
+	//	readyList = helperReadyList;
+	//} else {
+	//	while (temp->pid != pid && temp->next != NULL) {
+	//		//printf("\n not found\n");
+	//		helperReadyList = helperReadyList->next;
+	//		temp = temp->next;
+	//	}
+	//	if (temp->pid == pid) {
+	//		printf("\n found\n");
+	//		helperReadyList->next = temp->next;
+	//		readyList = helperReadyList;
+	//		free(temp);
+	//	}
+	//}
 	return TRUE;
 }
 
@@ -307,10 +309,7 @@ readyListElement_t* headOfReadyList()
 /*		- no process is added as "ready" before its start time has elapsed	*/
 {
 	if (!isReadyListEmpty()) {
-		readyOne.pid = readyList->pid;//weise rO pid die pid von rL zu 
-		readyOne.next = NULL;//NUll oder readyList->next??
-		return &readyOne;	//erstes  listen element wird wiedergegeben
-		// return pointer to the only ready element remembered
+		return readyList;	//erstes  listen element wird wiedergegeben
 	}
 	else return NULL;		// empty ready list has no first element
 }
