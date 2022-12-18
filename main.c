@@ -21,7 +21,7 @@ void removeBlockedTest() {
 	printf("\n\t  second unlock pid is %d\n", blockedList->next->pid);
 	printf("\n\t  thrid unlock pid is %d\n", blockedList->next->next->pid);
 	//printf("\n\t  fourth unlock pid is %d\n", blockedList->next->next->next->pid);
-	removeBlocked(4);
+	removeBlocked(0);
 	printf("\n_____________________________________________________\n");
 	printf("\n\t  first unlock pid is %d\n", blockedList->pid);
 	printf("\n\t  second unlock pid is %d\n", blockedList->next->pid);
@@ -30,6 +30,7 @@ void removeBlockedTest() {
 }
 void blockedTest() {
 	printf("\n -------------\n");
+	printf("\nblockedTest\n");
 	//if (isBlockedListEmpty()) {
 	//	printf("empty\n\n\n");
 	//}
@@ -40,7 +41,7 @@ void blockedTest() {
 	addBlocked(1, 20);		// 20       3
 	addBlocked(2, 30);		// 30       4
 	addBlocked(3, 0);		// 00       1
-	printf("after addBlocked\n");
+	//printf("after addBlocked\n");
 	
 	printf("first unlock pid is %d\n", blockedList->pid);
 	//printf("first unlock io is %d\n", blockedList->IOready);
@@ -94,10 +95,11 @@ void removeReadyTest() {
 	printf("first ready pid is %d\n", readyList->pid);
 	printf("second ready pid is %d\n", readyList->next->pid);
 	printf("thrid ready pid is %d\n", readyList->next->next->pid);
+	removeReady(0);
 	removeReady(4);
 	printf("first ready pid is %d\n", readyList->pid);
 	printf("second ready pid is %d\n", readyList->next->pid);
-	printf("thrid ready pid is %d\n", readyList->next->next->pid);
+	//printf("thrid ready pid is %d\n", readyList->next->next->pid);
 	printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);// pid 1
 }
 void headOfReady() {
@@ -112,12 +114,16 @@ void shedule() {
 	printf("\n -------------\n");
 	addReady(0);
 	addReady(1);
+	//printf("\n\nfirst pid %d\n\n",headOfReadyList()->pid);
+	schedule(readyList);
+	//printf("\n\nfirst pid %d\n\n", headOfReadyList()->pid);
 	//schedule(readyList);
-	printf("\n\nfirst pid %d\n\n", schedule(readyList));
+	printf("\n\nfirst pid %d\n\n", headOfReadyList()->pid);
 }
 void removeList() {
 	printf("\n -------------\n");
 	addReady(1);
+	addReady(2);
 	
 	printf("next head %d\n", headOfReadyList()->pid);
 	if (headOfReadyList()->next != NULL) {
@@ -135,9 +141,9 @@ void tests() {
 		//removeBlockedTest();
 		//blockedTest();
 		//removeList();
-		shedule();
+		//shedule();
 		//readyTest();
-		//removeReadyTest();
+		removeReadyTest();
 		//headOfReady();
 }
 
