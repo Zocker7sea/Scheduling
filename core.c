@@ -46,7 +46,7 @@ void coreLoop(void)
 	schedulingEvent_t schedulingEvent=none;	// reason for interrupting the process
 	schedulingEvent_t releaseEvent=none;		// event that occured while process was running
 
-	do {	// loop until stimulus is complete
+	do {// loop until stimulus is complete
 		// select and run a process
 		currentProcess=schedule(readyList);	
 		if (currentProcess!= NO_PROCESS)		// schedulable process exists, given by its PID
@@ -115,6 +115,7 @@ void coreLoop(void)
 				processTable[readyProcess].status = ready;   // change status from "blocked" to "ready"
 				addReady(readyProcess);		// add this process to the ready list
 				logPid(readyProcess, "IO completed, process unblocked and switched to ready state");
+				printf("\ntest \n");
 				break;
 			case started: 
 				processTable[readyProcess].status = ready;   // change status from "init" to "ready"
