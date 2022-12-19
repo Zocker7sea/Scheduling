@@ -114,7 +114,7 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 /* retuns FALSE on error and TRUE on success								*/
 {
-	logPidAddBlocked(pid);
+	//logPidAddBlocked(pid);
 	processTable[pid].status = blocked;	// change process state to "blocked"
 	blockedNew =  malloc(sizeof(blockedList_t));
 	if (blockedNew != NULL) {
@@ -143,7 +143,7 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	logPidRemovelocked(pid);
+	//logPidRemovelocked(pid);
 	helperBlockedList = blockedList;
 	blockedList_t preve = NULL;
 	if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
@@ -159,6 +159,7 @@ Boolean removeBlocked(pid_t pid)
 		return FALSE;
 	}
 	preve->next = helperBlockedList->next;
+	free(preve);
 	return TRUE;
 }
 
@@ -214,7 +215,7 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 /* xxxx A global variable is used to store the only ready process in   xxxx */
 /* xxxx batch processing. A blocked list needs to be implemented 	   xxxx */
 {
-	logPidAddReady(pid);
+	//logPidAddReady(pid);
 	processTable[pid].status = ready;// change process state to "ready"
 	//speicher für neues element allokieren
 	readyNew = malloc(sizeof(readyList_t));
@@ -246,7 +247,7 @@ Boolean removeReady(pid_t pid)
 /* xxxx A global variable is used to store ready process in batch    xxxx */
 /* xxxx processing. A ready list needs to be implemented 		       xxxx */
 {
-	logPidRemoveReady(pid);
+	//logPidRemoveReady(pid);
 	helperReadyList = readyList;
 	readyList_t prev = NULL;
 	if (helperReadyList != NULL && helperReadyList->pid == pid) {
@@ -262,27 +263,7 @@ Boolean removeReady(pid_t pid)
 		return FALSE;
 	}
 	prev->next = helperReadyList->next;
-	//free(helperReadyList);
-	//previous attempt
-	//helperReadyList = readyList;
-	//readyList_t temp = readyList->next;
-	//if (helperReadyList->pid == pid) {
-	//	printf("\nfirst\n");
-	//	helperReadyList = helperReadyList->next;
-	//	readyList = helperReadyList;
-	//} else {
-	//	while (temp->pid != pid && temp->next != NULL) {
-	//		//printf("\n not found\n");
-	//		helperReadyList = helperReadyList->next;
-	//		temp = temp->next;
-	//	}
-	//	if (temp->pid == pid) {
-	//		printf("\n found\n");
-	//		helperReadyList->next = temp->next;
-	//		readyList = helperReadyList;
-	//		free(temp);
-	//	}
-	//}
+	free(prev);
 	return TRUE;
 }
 

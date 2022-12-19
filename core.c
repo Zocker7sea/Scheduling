@@ -81,12 +81,14 @@ void coreLoop(void)
 					currentProcess=NO_PROCESS; 
 					break; 
 				case io:	// block process for time of IO
-					addBlocked(currentProcess, sim_setIOBlockTime()); 
+					addBlocked(currentProcess, sim_setIOBlockTime());
+					logPidAddBlocked(currentProcess, schedulingEvent);
 					break; 
 				case quantumOver: // only logging needed
 					logPidCompleteness(currentProcess, processTable[currentProcess].usedCPU,
 						processTable[currentProcess].duration, "of the Process completed");
 						processTable[currentProcess].status = ready;	// update status
+						logPidAddReady(currentProcess);
 					// add this process to the ready list
 					addReady(currentProcess); 
 					break;
@@ -111,14 +113,17 @@ void coreLoop(void)
 				stimulusCompleted = TRUE;
 				break; 
 			case unblocked:
+				logPidRemoveBlocked(readyProcess);
 				removeBlocked(readyProcess); // remove from blocked pool
 				processTable[readyProcess].status = ready;   // change status from "blocked" to "ready"
+				logPidAddReady(readyProcess);
 				addReady(readyProcess);		// add this process to the ready list
 				logPid(readyProcess, "IO completed, process unblocked and switched to ready state");
-				printf("\ntest \n");
+				
 				break;
 			case started: 
 				processTable[readyProcess].status = ready;   // change status from "init" to "ready"
+				logPidAddReady(readyProcess);
 				addReady(readyProcess);		// add this process to the ready list
 				logPid(readyProcess, "New process initialised and now ready"); 
 				break;

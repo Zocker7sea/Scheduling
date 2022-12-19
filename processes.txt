@@ -1,5 +1,21 @@
  # <OwnerID> <start> <duration> <type>  , where <type> stands for <os | interactive | batch | background | foreground>
  01 00 10 os
- 02 10 60 background
- 03 160 100 background
- 04 200 30 batch
+ 02 10 160 interactive
+ 03 160 100 batch
+ 04 200 200 interactive
+ 05 250 80 batch
+ 06 350 80 interactive
+ 07 450 80 batch
+ 08 550 80 interactive
+ 09 650 80 batch
+ 10 750 80 background
+ 11 850 80 batch
+ 12 950 80 background
+ 13 1050 80 batch
+ 14 1150 80 background
+ 15 1250 80 batch
+ 16 1350 80 batch
+ 17 1450 80 background
+ 18 1550 80 batch
+ 19 1650 80 batch
+ 20 1750 80 batch
