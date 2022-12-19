@@ -16,7 +16,7 @@
 #define SIM_MULTIPROGAMMING
 
 // if this directive is enabled, the random number generator is seeded with zero
-#define NO_RANDOM_SEED 1
+#define NO_RANDOM_SEED 
 
 // Number of possible concurrent processes 
 #define NUM_PROCESSES 20

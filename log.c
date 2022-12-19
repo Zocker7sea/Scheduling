@@ -38,19 +38,27 @@ void logPidEvent(unsigned pid, schedulingEvent_t reason, char * message)
 }
 
 void logPidAddReady(unsigned pid) {
-	printf("\nadd to readylist %3u\n", pid);
+	printf("----------------------------------------------------\n");
+	printf("%6u : PID %3u : add to readylist\n", systemTime, pid);
+	printf("----------------------------------------------------\n");
 }
 
 void logPidRemoveReady(unsigned pid) {
-	printf("Removed from readylist %3u\n", pid);
+	printf("----------------------------------------------------\n");
+	printf("%6u : PID %3u : Removed from readylist \n", systemTime, pid);
+	printf("----------------------------------------------------\n");
 }
 
 void logPidAddBlocked(unsigned pid, schedulingEvent_t reason) {
-	printf("add to blockedlist %3u : Event: %s\n", pid, eventString[reason]);
+	printf("----------------------------------------------------\n");
+	printf("%6u : PID %3u : add to blockedlist : Event: %s \n", systemTime, pid, eventString[reason]);
+	printf("----------------------------------------------------\n");
 }
 
 void logPidRemoveBlocked(unsigned pid) {
-	printf("Removed from blockedlist %3u\n", pid);
+	printf("----------------------------------------------------\n");
+	printf("%6u : PID %3u : Removed from blockedlist \n", systemTime, pid);
+	printf("----------------------------------------------------\n");
 }
 		
 void logPidCompleteness(unsigned pid, unsigned done, unsigned length, 
