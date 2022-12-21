@@ -75,7 +75,7 @@ void readyTest() {
 	}
 	printf("first ready pid is %d\n", readyList->pid);
 	printf("second ready pid is %d\n", readyList->next->pid);
-	printf("thrid ready pid is %d\n", readyList->next->next->pid);
+ 	printf("thrid ready pid is %d\n", readyList->next->next->pid);
 	printf("fourth ready pid is %d\n", readyList->next->next->next->pid);
 	printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);// pid 0
 	printf("\SHedule pid is % d\n", schedule(readyList));
