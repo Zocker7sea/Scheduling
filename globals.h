@@ -16,7 +16,7 @@
 #define SIM_MULTIPROGAMMING
 
 // if this directive is enabled, the random number generator is seeded with zero
-#define NO_RANDOM_SEED
+#define NO_RANDOM_SEED 
 
 // Number of possible concurrent processes 
 #define NUM_PROCESSES 20
@@ -25,7 +25,7 @@
 #define NO_PROCESS 0
 
 // Maximum duration one process gets the CPU, zero indicates no preemption
-#define QUANTUM 20
+#define QUANTUM 50
 
 // name of the file with process definitions
 #define PROCESS_FILENAME "processes.txt"
