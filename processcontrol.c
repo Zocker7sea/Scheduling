@@ -99,7 +99,7 @@ Boolean initBlockedList(void)
 	helperBlockedList = NULL;
 	blockedNew = NULL;
 	blockedList = NULL;
-	blockedOne;
+	//blockedOne;
 	return TRUE;
 }
 
