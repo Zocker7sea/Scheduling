@@ -15,12 +15,14 @@
 /* Declare global variables according to definition in globals.h	*/
 PCB_t processTable[NUM_PROCESSES+1]; 	// the process table
 readyList_t readyList;	// list of runnable processes ---> rL
-readyList_t helperReadyList; // helper list for iteration
-readyList_t readyNew; // to save new added
+readyList_t helperReadyList;
+readyList_t readyNew;
 blockedList_t blockedList;	// pointer to blocked process ---> bL
-blockedList_t helperBlockedList; // helper list for iteration
-blockedList_t blockedNew; // to save new added
+blockedList_t helperBlockedList;
+blockedList_t blockedNew;
 
+readyList_t helperReadyList;//helper list of the runnable processes
+readyList_t readyNew; //new list element which is added to the readylist
 /* ----------------------------------------------------------------	*/
 /* Declarations of global variables visible only in this file 		*/
 
@@ -97,6 +99,7 @@ Boolean initBlockedList(void)
 	helperBlockedList = NULL;
 	blockedNew = NULL;
 	blockedList = NULL;
+	//blockedOne;
 	return TRUE;
 }
 
