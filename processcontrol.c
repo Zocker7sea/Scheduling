@@ -14,15 +14,8 @@
 /* ----------------------------------------------------------------	*/
 /* Declare global variables according to definition in globals.h	*/
 PCB_t processTable[NUM_PROCESSES+1]; 	// the process table
-readyList_t readyList;	// list of runnable processes ---> rL
-readyList_t helperReadyList;
-readyList_t readyNew;
-blockedList_t blockedList;	// pointer to blocked process ---> bL
-blockedList_t helperBlockedList;
-blockedList_t blockedNew;
-
-readyList_t helperReadyList;//helper list of the runnable processes
-readyList_t readyNew; //new list element which is added to the readylist
+readyList_t readyList;	// list of runnable processes
+blockedList_t blockedList;	// list of all blocked processes
 /* ----------------------------------------------------------------	*/
 /* Declarations of global variables visible only in this file 		*/
 
@@ -96,10 +89,7 @@ Boolean initBlockedList(void)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	helperBlockedList = NULL;
-	blockedNew = NULL;
 	blockedList = NULL;
-	//blockedOne;
 	return TRUE;
 }
 
@@ -119,83 +109,34 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 {
 	processTable[pid].status = blocked;	// change process state to "blocked"
 	blockedList_t newBlocked = malloc(sizeof(blockedList_t));
+	//speicher platz zuweisen
 	if (newBlocked != NULL) {
+		//wenn das zuweisen funktioniert hat, werte zuweisen
 		newBlocked->pid = pid;
 		newBlocked->IOready = systemTime + blockDuration;
 		newBlocked->next = NULL;
 	}
+	//gucken ob die list leer ist oder ob die erste IO Time größer als die neue Io Time ist
 	if (blockedList == NULL || blockedList->IOready >= newBlocked->IOready) {
+		//vom neuen eintrag das Next auf den anfang der Liste setzen
 		newBlocked->next = blockedList;
+		//blockedlist neu belegen
 		blockedList = newBlocked;
 	}
 	else {
 		blockedList_t current = blockedList;
+		//iterations variable
 		while (current->next != NULL && current->next->IOready < newBlocked->IOready) {
+			//überprüfen ob das current element nicht Null i st und ob 
+			//die nächste IO Time kleiner als die neue Io Time ist
 			current = current->next;
+			//current auf das nächste Element setzten
 		}
+		//Next vom neuen Element auf den current next eintrag setzen
 		newBlocked->next = current->next;
+		//current next auf das neue element setzen
 		current->next = newBlocked;
 	}
-
-
-
-
-	/*if (blockedList == NULL || blockedList->IOready >= newBlocked->IOready) {
-		newBlocked->next = blockedList;
-		blockedList = newBlocked;
-	}
-	else {
-		helperBlockedList = blockedList;
-		while (helperBlockedList->next != NULL && helperBlockedList->next->IOready < newBlocked->IOready) {
-			helperBlockedList = helperBlockedList->next;
-		}
-		newBlocked->next = helperBlockedList->next;
-		helperBlockedList->next = newBlocked;
-	}*/
-
-
-
-
-
-
-
-
-	////logPidAddBlocked(pid);
-	//processTable[pid].status = blocked;	// change process state to "blocked"
-	//blockedNew = malloc(sizeof(blockedList_t));
-	//if (blockedNew != NULL) {
-	//	blockedNew->pid = pid;
-	//	blockedNew->IOready = systemTime + blockDuration;
-	//	blockedNew->next = NULL;
-	//}
-	//////emtpy list
-	////if (blockedList == NULL) {
-	////	blockedList = blockedNew;
-	////}
-	//////new blocked is smaller
-	////if (blockedNew->IOready < blockedList->IOready) {
-	////	blockedNew = blockedList;
-	////	blockedList = blockedNew;
-	////}
-	////helperBlockedList = blockedList;
-	////while (helperBlockedList->next != NULL && helperBlockedList->next->IOready < blockedNew->IOready) {
-	////	helperBlockedList = helperBlockedList->next;
-	////}
-	////blockedNew->next = helperBlockedList->next;
-	////helperBlockedList->next = blockedNew;
-
-	//if (blockedList == NULL || blockedNew->IOready <= blockedList->IOready){//			blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid)	
-	//	blockedNew->next = blockedList;
-	//	blockedList = blockedNew;
-	//}else {
-	//	helperBlockedList = blockedList;
-	//	while (helperBlockedList->next != NULL && helperBlockedList->next->IOready <= blockedNew->IOready) {
-	//		helperBlockedList = helperBlockedList->next;
-	//	}
-	//	blockedNew->next = helperBlockedList->next;
-	//	helperBlockedList->next = blockedNew;
-	//}
-	//free(blockedNew);
 	return TRUE;
 }
 
@@ -207,103 +148,34 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
+	//helfer list fürs iterieren
 	blockedList_t current = blockedList;
+	//zum speichern des vorherigen elements
 	blockedList_t prev = NULL;
+	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen übereinstimmt
 	while (current != NULL && current->pid != pid) {
+		//prev auf den derzeitigen current eintrag setzen
 		prev = current;
+		//current auf das nächste  element setzen
 		current = current->next;
 	}
+	//wenn curren gleich Null ist 
 	if (current == NULL) {
+		//gibt es nichts zu löschen
 		return FALSE;
 	}
+	//wenn prev gleich Null ist
 	if (prev == NULL) {
+		//ist es der erste eintrag und die blockedlist wird auf das current next element gesetzt
 		blockedList = current->next;
 	}
+	//wenn prev ungleich NUll ist
 	else {
+		//next von prev auf current next setzten
 		prev->next = current->next;
+		//den speicher von current frei geben
 		free(current);
 	}
-	return TRUE;
-
-
-
-	/*blockedList_t previous = NULL;
-	helperBlockedList = blockedList;
-	while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
-		previous = helperBlockedList;
-		helperBlockedList = helperBlockedList->next;
-	}
-	if (helperBlockedList == NULL) {
-		return FALSE;
-	}
-	if (previous == NULL) {
-		blockedList = helperBlockedList->next;
-	}
-	else {
-		previous->next = helperBlockedList->next;
-	}*/
-	//free(helperBlockedList);
-
-
-	//helperBlockedList = blockedList;
-	//blockedList_t prev = NULL;
-	//if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
-	//	blockedList = helperBlockedList->next;
-	//	//free(helperReadyList);
-	//	return TRUE;
-	//}
-	//while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
-	//	prev = helperBlockedList;
-	//	helperBlockedList = helperBlockedList->next;
-	//}
-	//if (helperBlockedList == NULL) {
-	//	return FALSE;
-	//}
-	//prev->next = helperBlockedList->next;
-	//free(prev);
-	//return TRUE;
-
-
-
-	//if (blockedList == NULL) {
-	//	return FALSE;
-	//}
-	//if (blockedList->pid == pid) {
-	//	//blockedList_t tempp = blockedList;
-	//	blockedList = blockedList->next;
-	//	//free(tempp);
-	//	return TRUE;
-	//}
-	//helperBlockedList = blockedList;
-	//while (helperBlockedList->next != NULL && helperBlockedList->next->pid != pid) {
-	//	helperBlockedList = helperBlockedList->next;
-	//}
-	//if (helperBlockedList == NULL) {
-	//	return FALSE;
-	//}
-	//blockedList_t temp = helperBlockedList->next;
-	//helperBlockedList->next = temp->next;
-
-	////free(temp);
-
-
-	////logPidRemovelocked(pid);
-	//helperBlockedList = blockedList;
-	//blockedList_t preve = NULL;
-	//if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
-	//	blockedList = helperBlockedList->next;
-	//	//free(helperBlockedList);
-	//	return TRUE;
-	//}
-	//while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
-	//	preve = helperBlockedList;
-	//	helperBlockedList = helperBlockedList->next;
-	//}
-	//if (helperBlockedList == NULL) {
-	//	return FALSE;
-	//}
-	//preve->next = helperBlockedList->next;
-	//free(preve);
 	return TRUE;
 }
 
@@ -343,8 +215,6 @@ Boolean initReadyList(void)
 /* xxxx A global variable is used to store the ready process in        xxxx */
 /* xxxx batch processing. A ready list needs to be implemented 		   xxxx */
 {
-	helperReadyList= NULL;
-	//readyNew = NULL;
 	readyList = NULL;
 	return TRUE;
 }
@@ -359,12 +229,10 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 /* xxxx A global variable is used to store the only ready process in   xxxx */
 /* xxxx batch processing. A blocked list needs to be implemented 	   xxxx */
 {
-	//logPidAddReady(pid);
 	processTable[pid].status = ready;// change process state to "ready"
-	//speicher für neues element allokieren
-	readyList_t current   = readyList;
+	//speicher platz zuweisen
 	readyList_t newReady = malloc(sizeof(readyList_t));
-	
+	//wenn das zuweisen funktioniert hat, werte zuweisen
 	if (newReady != NULL) {
 		// werte  zuweisen
 		newReady->pid = pid;
@@ -375,12 +243,17 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 		//wenn die liste leer ist, dann wird die liste zu newReady
 		readyList = newReady;
 		return TRUE;
-	}//else {
+	}else {
+		//helfer list fürs iterieren
+		readyList_t current   = readyList;
 		while (current->next != NULL) {
+			//gucken ob das next element von current nicht Null ist
 			current = current->next;
+			//current auf den next wert setzten
 		}
+		//wenn der current next eintrag NUll ist, newReady ranhängen
 		current->next = newReady;
-	//}		
+	}		
 		return TRUE;
 }
 
@@ -394,59 +267,64 @@ Boolean removeReady(pid_t pid)
 /* xxxx A global variable is used to store ready process in batch    xxxx */
 /* xxxx processing. A ready list needs to be implemented 		       xxxx */
 {
-	//if head is NULL
-	if (readyList == NULL) {
-		return FALSE;
-	}
-	if (readyList->pid == pid) {
-		readyList_t del = malloc(sizeof(readyList_t));
-		if (del != NULL) {
-			del = readyList;
-		}
-		readyList = readyList->next;
-		free(del);
-		return TRUE;
-	}
-	removeReady(pid);
-
-
-
-
-	/*readyList_t current = readyList;
+	//helfer list fürs iterieren
+	readyList_t current = readyList;
+	//zum speichern des vorherigen elements
 	readyList_t prev = NULL;
-	if (current != NULL && current->pid == pid) {
-		readyList = current->next;
-		free(current);
-		return;
-	}
+	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen übereinstimmt
 	while (current != NULL && current->pid != pid) {
+		//prev auf den derzeitigen current eintrag setzen
 		prev = current;
+		//current auf das nächste  element setzen
 		current = current->next;
 	}
+	//wenn curren gleich Null ist 
 	if (current == NULL) {
+		//gibt es nichts zu löschen
 		return FALSE;
 	}
-	else {
-		prev->next = current->next;
-		free(current);
-	}*/
-	
-
-	/*while (current != NULL && current->pid != pid) {
-		prev = current;
-		current = current->next;
-	}
-	if (current == NULL) {
-		return FALSE;
-	}
+	//wenn prev gleich Null ist
 	if (prev == NULL) {
+		//ist es der erste eintrag und die blockedlist wird auf das current next element gesetzt
 		readyList = current->next;
 	}
+	//wenn prev ungleich NUll ist
 	else {
+		//next von prev auf current next setzten
 		prev->next = current->next;
+		//den speicher von current frei geben
 		free(current);
-	}*/
+	}
 	return TRUE;
+
+
+
+
+
+
+
+
+	////helfer list fürs iterieren
+	//readyList_t current = readyList;
+	////zum speichern des vorherigen elements
+	//readyList_t prev = NULL;
+	//if (current != NULL && current->pid == pid) {
+	//	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen pid übereinstimmt
+
+	//	readyList = current->next;
+	//	//free(helperReadyList);
+	//	return TRUE;
+	//}
+	//while (current != NULL && current->pid != pid) {
+	//	prev = current;
+	//	current = current->next;
+	//}
+	//if (current == NULL) {
+	//	return FALSE;
+	//}
+	//prev->next = current->next;
+	//free(prev);
+	//return TRUE;
 }
 
 Boolean isReadyListEmpty(void)

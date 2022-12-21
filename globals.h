@@ -16,10 +16,10 @@
 #define SIM_MULTIPROGAMMING
 
 // if this directive is enabled, the random number generator is seeded with zero
-#define NO_RANDOM_SEED 
+//#define NO_RANDOM_SEED 
 
 // Number of possible concurrent processes 
-#define NUM_PROCESSES 5
+#define NUM_PROCESSES 20
 
 // PID of zero is used to indicate that no matching process exists
 #define NO_PROCESS 0
