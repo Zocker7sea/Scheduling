@@ -114,24 +114,85 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 /* retuns FALSE on error and TRUE on success								*/
 {
-	//logPidAddBlocked(pid);
 	processTable[pid].status = blocked;	// change process state to "blocked"
-	blockedNew =  malloc(sizeof(blockedList_t));
-	if (blockedNew != NULL) {
-		blockedNew->pid = pid;
-		blockedNew->IOready = systemTime + blockDuration;
-		blockedNew->next = NULL;
+	blockedList_t newBlocked = malloc(sizeof(blockedList_t));
+	if (newBlocked != NULL) {
+		newBlocked->pid = pid;
+		newBlocked->IOready = systemTime + blockDuration;
+		newBlocked->next = NULL;
 	}
-	if (blockedList == NULL || blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid)	
-		blockedNew->next = blockedList;
-		blockedList = blockedNew;
-	}else {
+	if (blockedList == NULL || blockedList->IOready >= newBlocked->IOready) {
+		newBlocked->next = blockedList;
+		blockedList = newBlocked;
+	}
+	else {
+		blockedList_t current = blockedList;
+		while (current->next != NULL && current->next->IOready < newBlocked->IOready) {
+			current = current->next;
+		}
+		newBlocked->next = current->next;
+		current->next = newBlocked;
+	}
+
+
+
+
+	/*if (blockedList == NULL || blockedList->IOready >= newBlocked->IOready) {
+		newBlocked->next = blockedList;
+		blockedList = newBlocked;
+	}
+	else {
 		helperBlockedList = blockedList;
-		while (helperBlockedList->next != NULL && helperBlockedList->next->IOready < blockedNew->IOready) {
+		while (helperBlockedList->next != NULL && helperBlockedList->next->IOready < newBlocked->IOready) {
 			helperBlockedList = helperBlockedList->next;
 		}
-		helperBlockedList->next = blockedNew;
-	}
+		newBlocked->next = helperBlockedList->next;
+		helperBlockedList->next = newBlocked;
+	}*/
+
+
+
+
+
+
+
+
+	////logPidAddBlocked(pid);
+	//processTable[pid].status = blocked;	// change process state to "blocked"
+	//blockedNew = malloc(sizeof(blockedList_t));
+	//if (blockedNew != NULL) {
+	//	blockedNew->pid = pid;
+	//	blockedNew->IOready = systemTime + blockDuration;
+	//	blockedNew->next = NULL;
+	//}
+	//////emtpy list
+	////if (blockedList == NULL) {
+	////	blockedList = blockedNew;
+	////}
+	//////new blocked is smaller
+	////if (blockedNew->IOready < blockedList->IOready) {
+	////	blockedNew = blockedList;
+	////	blockedList = blockedNew;
+	////}
+	////helperBlockedList = blockedList;
+	////while (helperBlockedList->next != NULL && helperBlockedList->next->IOready < blockedNew->IOready) {
+	////	helperBlockedList = helperBlockedList->next;
+	////}
+	////blockedNew->next = helperBlockedList->next;
+	////helperBlockedList->next = blockedNew;
+
+	//if (blockedList == NULL || blockedNew->IOready <= blockedList->IOready){//			blockedList->IOready >= blockedNew->IOready){ //|| helperReadyList->pid >= pid)	
+	//	blockedNew->next = blockedList;
+	//	blockedList = blockedNew;
+	//}else {
+	//	helperBlockedList = blockedList;
+	//	while (helperBlockedList->next != NULL && helperBlockedList->next->IOready <= blockedNew->IOready) {
+	//		helperBlockedList = helperBlockedList->next;
+	//	}
+	//	blockedNew->next = helperBlockedList->next;
+	//	helperBlockedList->next = blockedNew;
+	//}
+	//free(blockedNew);
 	return TRUE;
 }
 
@@ -143,23 +204,103 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 {
-	//logPidRemovelocked(pid);
-	helperBlockedList = blockedList;
-	blockedList_t preve = NULL;
-	if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
-		blockedList = helperBlockedList->next;
-		//free(helperReadyList);
-		return TRUE;
+	blockedList_t current = blockedList;
+	blockedList_t prev = NULL;
+	while (current != NULL && current->pid != pid) {
+		prev = current;
+		current = current->next;
 	}
+	if (current == NULL) {
+		return FALSE;
+	}
+	if (prev == NULL) {
+		blockedList = current->next;
+	}
+	else {
+		prev->next = current->next;
+		free(current);
+	}
+	return TRUE;
+
+
+
+	/*blockedList_t previous = NULL;
+	helperBlockedList = blockedList;
 	while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
-		preve = helperBlockedList;
+		previous = helperBlockedList;
 		helperBlockedList = helperBlockedList->next;
 	}
 	if (helperBlockedList == NULL) {
 		return FALSE;
 	}
-	preve->next = helperBlockedList->next;
-	free(preve);
+	if (previous == NULL) {
+		blockedList = helperBlockedList->next;
+	}
+	else {
+		previous->next = helperBlockedList->next;
+	}*/
+	//free(helperBlockedList);
+
+
+	//helperBlockedList = blockedList;
+	//blockedList_t prev = NULL;
+	//if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
+	//	blockedList = helperBlockedList->next;
+	//	//free(helperReadyList);
+	//	return TRUE;
+	//}
+	//while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
+	//	prev = helperBlockedList;
+	//	helperBlockedList = helperBlockedList->next;
+	//}
+	//if (helperBlockedList == NULL) {
+	//	return FALSE;
+	//}
+	//prev->next = helperBlockedList->next;
+	//free(prev);
+	//return TRUE;
+
+
+
+	//if (blockedList == NULL) {
+	//	return FALSE;
+	//}
+	//if (blockedList->pid == pid) {
+	//	//blockedList_t tempp = blockedList;
+	//	blockedList = blockedList->next;
+	//	//free(tempp);
+	//	return TRUE;
+	//}
+	//helperBlockedList = blockedList;
+	//while (helperBlockedList->next != NULL && helperBlockedList->next->pid != pid) {
+	//	helperBlockedList = helperBlockedList->next;
+	//}
+	//if (helperBlockedList == NULL) {
+	//	return FALSE;
+	//}
+	//blockedList_t temp = helperBlockedList->next;
+	//helperBlockedList->next = temp->next;
+
+	////free(temp);
+
+
+	////logPidRemovelocked(pid);
+	//helperBlockedList = blockedList;
+	//blockedList_t preve = NULL;
+	//if (helperBlockedList != NULL && helperBlockedList->pid == pid) {
+	//	blockedList = helperBlockedList->next;
+	//	//free(helperBlockedList);
+	//	return TRUE;
+	//}
+	//while (helperBlockedList != NULL && helperBlockedList->pid != pid) {
+	//	preve = helperBlockedList;
+	//	helperBlockedList = helperBlockedList->next;
+	//}
+	//if (helperBlockedList == NULL) {
+	//	return FALSE;
+	//}
+	//preve->next = helperBlockedList->next;
+	//free(preve);
 	return TRUE;
 }
 
@@ -200,7 +341,7 @@ Boolean initReadyList(void)
 /* xxxx batch processing. A ready list needs to be implemented 		   xxxx */
 {
 	helperReadyList= NULL;
-	readyNew = NULL;
+	//readyNew = NULL;
 	readyList = NULL;
 	return TRUE;
 }
@@ -218,22 +359,25 @@ Boolean addReady(pid_t pid)	// add this process to the ready list
 	//logPidAddReady(pid);
 	processTable[pid].status = ready;// change process state to "ready"
 	//speicher für neues element allokieren
-	readyNew = malloc(sizeof(readyList_t));
-	if (readyNew != NULL) {
+	readyList_t current   = readyList;
+	readyList_t newReady = malloc(sizeof(readyList_t));
+	
+	if (newReady != NULL) {
 		// werte  zuweisen
-		readyNew->pid = pid;
-		readyNew->next = NULL;
+		newReady->pid = pid;
+		newReady->next = NULL;
 	}
+
 	if (readyList == NULL) {
-		//wenn die liste leer ist, dann wird die liste zu readynew
-		readyList = readyNew;
-	}else {
-		helperReadyList = readyList;
-		while (helperReadyList->next != NULL) {
-			helperReadyList = helperReadyList->next;
+		//wenn die liste leer ist, dann wird die liste zu newReady
+		readyList = newReady;
+		return TRUE;
+	}//else {
+		while (current->next != NULL) {
+			current = current->next;
 		}
-		helperReadyList->next = readyNew;
-	}		
+		current->next = newReady;
+	//}		
 		return TRUE;
 }
 
@@ -247,23 +391,58 @@ Boolean removeReady(pid_t pid)
 /* xxxx A global variable is used to store ready process in batch    xxxx */
 /* xxxx processing. A ready list needs to be implemented 		       xxxx */
 {
-	//logPidRemoveReady(pid);
-	helperReadyList = readyList;
-	readyList_t prev = NULL;
-	if (helperReadyList != NULL && helperReadyList->pid == pid) {
-		readyList = helperReadyList->next;
-		//free(helperReadyList);
-		return TRUE;
-	}
-	while (helperReadyList != NULL && helperReadyList->pid != pid) {
-		prev = helperReadyList;
-		helperReadyList = helperReadyList->next;
-	}
-	if (helperReadyList == NULL) {
+	//if head is NULL
+	if (readyList == NULL) {
 		return FALSE;
 	}
-	prev->next = helperReadyList->next;
-	free(prev);
+	if (readyList->pid == pid) {
+		readyList_t del = malloc(sizeof(readyList_t));
+		if (del != NULL) {
+			del = readyList;
+		}
+		readyList = readyList->next;
+		free(del);
+		return TRUE;
+	}
+	removeReady(pid);
+
+
+
+
+	/*readyList_t current = readyList;
+	readyList_t prev = NULL;
+	if (current != NULL && current->pid == pid) {
+		readyList = current->next;
+		free(current);
+		return;
+	}
+	while (current != NULL && current->pid != pid) {
+		prev = current;
+		current = current->next;
+	}
+	if (current == NULL) {
+		return FALSE;
+	}
+	else {
+		prev->next = current->next;
+		free(current);
+	}*/
+	
+
+	/*while (current != NULL && current->pid != pid) {
+		prev = current;
+		current = current->next;
+	}
+	if (current == NULL) {
+		return FALSE;
+	}
+	if (prev == NULL) {
+		readyList = current->next;
+	}
+	else {
+		prev->next = current->next;
+		free(current);
+	}*/
 	return TRUE;
 }
 

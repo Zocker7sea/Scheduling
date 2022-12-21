@@ -12,8 +12,8 @@ unsigned systemTime = 0; 	// the current system time (up time)
 void removeBlockedTest() {
 	printf("\n -------------\n");
 	addBlocked(0, 5);		// 55       2
-	addBlocked(1, 20);		// 70       3
-	addBlocked(2, 30);		//80        4
+	addBlocked(1, 20);		// 70       4
+	addBlocked(2, 30);		//80        5
 	addBlocked(3, 0);		//50        1
 	//printf("\n\n  ReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);// pid 3
 	//removeBlocked(headOfBlockedList()->pid);
@@ -21,14 +21,24 @@ void removeBlockedTest() {
 	//printf("\n\t  second unlock pid is %d\n", blockedList->next->pid);
 	//printf("\n\t  thrid unlock pid is %d\n", blockedList->next->next->pid);
 	//printf("\n\t  fourth unlock pid is %d\n", blockedList->next->next->next->pid);
-	removeBlocked(headOfBlockedList()->pid);
+	removeBlocked(2);
 	printf("\n_____________________________________________________\n");
 	//printf("\n\t  first unlock pid is %d\n", blockedList->pid);
 	//printf("\n\t  second unlock pid is %d\n", blockedList->next->pid);
 	//printf("\n\t  thrid unlock pid is %d\n", blockedList->next->next->pid);
 	printf("\n\n  ReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);
+	addBlocked(4, 15);		//50        3
 	removeBlocked(headOfBlockedList()->pid);
 	printf("\n\n  ReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);
+	removeBlocked(headOfBlockedList()->pid);
+	printf("\n\n  ReadyOne aka first one pid is %d\n\n", headOfBlockedList()->pid);
+	removeBlocked(headOfBlockedList()->pid);
+	if (isBlockedListEmpty()) {
+		printf("empty\n\n\n");
+	}
+	else {
+		printf("not empty\n\n\n");
+	}
 }
 void blockedTest() {
 	printf("\n -------------\n");
@@ -81,7 +91,7 @@ void readyTest() {
 	removeReady(0);
 	printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);// pid 0
 	
-	//printf("============");
+	printf("============");
 	//printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);
 	//printf("\Shedule pid is % d\n", schedule(readyList));
 	//printf("\nReadyOne aka first one pid is %d\n", headOfReadyList()->pid);

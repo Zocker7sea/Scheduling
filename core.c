@@ -81,8 +81,8 @@ void coreLoop(void)
 					currentProcess=NO_PROCESS; 
 					break; 
 				case io:	// block process for time of IO
-					addBlocked(currentProcess, sim_setIOBlockTime());
 					logPidAddBlocked(currentProcess, schedulingEvent);
+					addBlocked(currentProcess, sim_setIOBlockTime());
 					break; 
 				case quantumOver: // only logging needed
 					logPidCompleteness(currentProcess, processTable[currentProcess].usedCPU,

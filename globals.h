@@ -19,7 +19,7 @@
 #define NO_RANDOM_SEED 
 
 // Number of possible concurrent processes 
-#define NUM_PROCESSES 20
+#define NUM_PROCESSES 5
 
 // PID of zero is used to indicate that no matching process exists
 #define NO_PROCESS 0
