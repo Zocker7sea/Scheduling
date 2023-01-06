@@ -127,7 +127,7 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 		blockedList_t current = blockedList;
 		//iterations variable
 		while (current->next != NULL && current->next->IOready < newBlocked->IOready) {
-			//überprüfen ob das current element nicht Null i st und ob 
+			//überprüfen ob das current element nicht Null ist und ob 
 			//die nächste IO Time kleiner als die neue Io Time ist
 			current = current->next;
 			//current auf das nächste Element setzten
@@ -152,7 +152,7 @@ Boolean removeBlocked(pid_t pid)
 	blockedList_t current = blockedList;
 	//zum speichern des vorherigen elements
 	blockedList_t prev = NULL;
-	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen übereinstimmt
+	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen pid übereinstimmt
 	while (current != NULL && current->pid != pid) {
 		//prev auf den derzeitigen current eintrag setzen
 		prev = current;
@@ -271,7 +271,7 @@ Boolean removeReady(pid_t pid)
 	readyList_t current = readyList;
 	//zum speichern des vorherigen elements
 	readyList_t prev = NULL;
-	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen übereinstimmt
+	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen pid übereinstimmt
 	while (current != NULL && current->pid != pid) {
 		//prev auf den derzeitigen current eintrag setzen
 		prev = current;
@@ -285,7 +285,7 @@ Boolean removeReady(pid_t pid)
 	}
 	//wenn prev gleich Null ist
 	if (prev == NULL) {
-		//ist es der erste eintrag und die blockedlist wird auf das current next element gesetzt
+		//ist es der erste eintrag und die readylist wird auf das current next element gesetzt
 		readyList = current->next;
 	}
 	//wenn prev ungleich NUll ist
@@ -296,35 +296,6 @@ Boolean removeReady(pid_t pid)
 		free(current);
 	}
 	return TRUE;
-
-
-
-
-
-
-
-
-	////helfer list fürs iterieren
-	//readyList_t current = readyList;
-	////zum speichern des vorherigen elements
-	//readyList_t prev = NULL;
-	//if (current != NULL && current->pid == pid) {
-	//	//überprüfen ob das current element nicht NUll ist und die pid nicht mit der angegebenen pid übereinstimmt
-
-	//	readyList = current->next;
-	//	//free(helperReadyList);
-	//	return TRUE;
-	//}
-	//while (current != NULL && current->pid != pid) {
-	//	prev = current;
-	//	current = current->next;
-	//}
-	//if (current == NULL) {
-	//	return FALSE;
-	//}
-	//prev->next = current->next;
-	//free(prev);
-	//return TRUE;
 }
 
 Boolean isReadyListEmpty(void)
