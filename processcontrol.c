@@ -278,7 +278,7 @@ Boolean removeReady(pid_t pid)
 		//current auf das nächste  element setzen
 		current = current->next;
 	}
-	//wenn curren gleich Null ist 
+	//wenn current gleich Null ist 
 	if (current == NULL) {
 		//gibt es nichts zu löschen
 		return FALSE;

@@ -4,18 +4,18 @@
  03 160 100 interactive
  04 200 200 interactive
  05 250 80 interactive
- 06 350 80 background
- 07 450 80 background
- 08 550 80 background
+ 06 350 550 background
+ 07 450 170 background
+ 08 550 220 background
  09 650 80 background
- 10 750 80 interactive
+ 10 750 140 interactive
  11 850 80 interactive
  12 950 80 foreground
- 13 1050 80 foreground
+ 13 1050 800 foreground
  14 1150 80 foreground
  15 1250 80 foreground
- 16 1350 80 interactive
+ 16 1350 180 interactive
  17 1450 80 batch
- 18 1550 80 batch
- 19 1650 80 batch
+ 18 1550 230 batch
+ 19 1650 110 batch
  20 1750 80 batch
