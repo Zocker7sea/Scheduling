@@ -28,7 +28,7 @@
 #define QUANTUM 50
 
 // name of the file with process definitions
-#define PROCESS_FILENAME " processes.txt"
+#define PROCESS_FILENAME "processes.txt"
 
 /* ----------------------------------------------------------------	*/
 /* Define global variables that will be visible in all sourcefiles	*/
