@@ -41,9 +41,6 @@
     <ClInclude Include="dispatcher.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="globals.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="log.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

@@ -106,6 +106,8 @@ Boolean addBlocked(pid_t pid, unsigned blockDuration)
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
 /* retuns FALSE on error and TRUE on success								*/
+//Inspiriert von https://www.geeksforgeeks.org/given-a-linked-list-which-is-sorted-how-will-you-insert-in-sorted-way/
+
 {
 	processTable[pid].status = blocked;	// change process state to "blocked"
 	blockedList_t newBlocked = malloc(sizeof(blockedList_t));
@@ -147,6 +149,7 @@ Boolean removeBlocked(pid_t pid)
 /* xxxx extended to enable full functionality of the operating system  xxxx */
 /* xxxx A global variable is used to store blocked process in batch    xxxx */
 /* xxxx processing. A blocked list needs to be implemented 		       xxxx */
+//Inspiriert von https://www.geeksforgeeks.org/c-program-for-deleting-a-node-in-a-linked-list/
 {
 	//helfer list fürs iterieren
 	blockedList_t current = blockedList;
@@ -191,7 +194,7 @@ blockedListElement_t *headOfBlockedList()
 /* MUST be implemented for simulation purposes								*/			
 {
 	if (!isBlockedListEmpty()) {
-		return blockedList;	// return pointer to the only blocked element remembered
+		return blockedList;	// return blockedlist
 	} 
 	else return NULL;		// empty blocked list has no first element
 }
@@ -266,6 +269,7 @@ Boolean removeReady(pid_t pid)
 /* xxxx extended to enable full functionality of the operating system  xxxx */
 /* xxxx A global variable is used to store ready process in batch    xxxx */
 /* xxxx processing. A ready list needs to be implemented 		       xxxx */
+//Inspiriert von https://www.geeksforgeeks.org/c-program-for-deleting-a-node-in-a-linked-list/
 {
 	//helfer list fürs iterieren
 	readyList_t current = readyList;

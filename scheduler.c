@@ -22,8 +22,8 @@
 pid_t schedule(readyList_t readyListParam){
 	pid_t nextToRun;
 	if (readyListParam == NULL) return NO_PROCESS;
-	nextToRun = headOfReadyList()->pid;
-	removeReady(nextToRun);
+	nextToRun = headOfReadyList()->pid; //nextToRun die pid des ersten Eintrags aus der Readylist zuweisen
+	removeReady(nextToRun);//die Pid von nextToRun aus der Readylist löschen, da dieser dann ausgeführt wird
 	return nextToRun;
 }
 	

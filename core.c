@@ -70,8 +70,9 @@ void coreLoop(void)
 				addReady(readyProcess);		// add this process to the ready list
 				logPidAddReady(readyProcess);
 				if (releaseEvent == unblocked) {
-					removeBlocked(readyProcess);
-					logPidRemoveBlocked(readyProcess);
+					//wenn der Prozess aus dem Unblocked Status kommt
+					removeBlocked(readyProcess);//entferen wir diesen aus der Blockedlist
+					logPidRemoveBlocked(readyProcess);//Log output für den Prozess
 				}
 				/* Last command in the while loop is the following (must alway remain the last command in the loop) */
 				releaseEvent = sim_check4UnblockedOrNew(&readyProcess);	// check for further events, must stay in!

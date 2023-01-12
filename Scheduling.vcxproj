@@ -151,7 +151,6 @@
     <ClInclude Include="bs_types.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="dispatcher.h" />
-    <ClInclude Include="globals.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="processcontrol.h" />
     <ClInclude Include="scheduler.h" />
